@@ -15,5 +15,6 @@ def compare_numbers(user_number):
 
 
 
+
 compare_numbers(42)
 compare_numbers(150)
