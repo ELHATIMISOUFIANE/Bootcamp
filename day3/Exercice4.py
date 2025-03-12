@@ -43,3 +43,19 @@ class Zoo:
         print("Groupes d'animaux :")
         for key, value in grouped_animals.items():
             print(f"{key}: {value}")
+
+
+new_york_zoo = Zoo("New York Zoo")
+new_york_zoo.add_animal("Lion")
+new_york_zoo.add_animal("Tiger")
+new_york_zoo.add_animal("Elephant")
+new_york_zoo.add_animal("Ape")
+new_york_zoo.add_animal("Baboon")
+new_york_zoo.add_animal("Bear")
+new_york_zoo.add_animal("Cat")
+new_york_zoo.add_animal("Cougar")
+new_york_zoo.add_animal("Eel")
+new_york_zoo.add_animal("Emu")
+new_york_zoo.get_animals()
+new_york_zoo.sell_animal("Tiger")
+new_york_zoo.get_groups()
