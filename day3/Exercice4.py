@@ -16,7 +16,7 @@ class Zoo:
         """Affiche tous les animaux du zoo."""
         print("Animaux dans le zoo :")
         for animal in self.animals:
-            print(animal)
+                print(animal)
 
     def sell_animal(self, animal_sold):
         """Retire un animal de la liste s'il existe."""
