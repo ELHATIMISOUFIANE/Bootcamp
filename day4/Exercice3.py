@@ -1,4 +1,4 @@
-from dog import Dog  # Import de la classe Dog
+from Exercice1 import Dog  # Import de la classe Dog
 import random  # Pour choisir une phrase aléatoire dans do_a_trick
 
 class PetDog(Dog):
