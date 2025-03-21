@@ -25,9 +25,9 @@ def initialize_database():
     # Si la base de données est vide, ajouter les utilisateurs par défaut
     if count == 0:
         default_users = [
-            ("alice", "password123"),
-            ("bob", "securepass"),
-            ("charlie", "qwerty789")
+            ("soufiane", "passd123"),
+            ("salman", "pass"),
+            ("charlie", "qwerty")
         ]
         
         for username, password in default_users:
