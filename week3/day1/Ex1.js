@@ -20,3 +20,18 @@ console.log(people.indexOf("Foo")); // -1 (non présent)
 
 // 7. Dernier élément
 const last = people[people.length - 1]; // "Alice"
+
+
+// 1. Boucle simple
+for (let person of people) {
+    console.log(person);
+  }
+  
+  // 2. Boucle avec break
+  for (let person of people) {
+    console.log(person);
+    if (person === "Devon") break;
+  }
+
+
+  
