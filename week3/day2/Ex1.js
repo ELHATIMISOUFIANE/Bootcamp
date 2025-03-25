@@ -7,7 +7,7 @@ people.shift();
 people[people.indexOf("James")] = "Jason";
 
 // 3. Ajouter votre nom
-people.push("Alice");
+people.push("Soufiane");
 
 // 4. Index de "Mary"
 console.log(people.indexOf("Mary")); // 0
