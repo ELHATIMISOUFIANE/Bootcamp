@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio de Batterie Électronique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f0f1a;
+            --bg-light: #1a1a2e;
+            --accent-color: #16b8f3;
+            --text-primary: #e0e0ff;
+            --text-secondary: #8888aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-light));
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--accent-color), #8a4fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 15px rgba(138, 79, 255, 0.3);
+        }
+
+        .drumset {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 30px;
+        }
+
+        .drum-pad {
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 15px;
+            border: 2px solid rgba(22, 184, 243, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drum-pad::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(22, 184, 243, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .drum-pad:hover::before {
+            opacity: 1;
+        }
+
+        .drum-pad.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(22, 184, 243, 0.5);
+        }
+
+        .drum-pad .key {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .drum-pad .label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .playlists {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .playlist {
+            background: rgba(15, 15, 26, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .playlist:hover {
+            background: rgba(22, 184, 243, 0.1);
+        }
+
+        .playlist-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .playlist-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .playlist-difficulty {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .play-btn {
+            background: var(--accent-color);
+            color: var(--bg-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(22, 184, 243, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .drumset {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .drumset {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Studio de Batterie</h1>
+
+        <div class="drumset">
+            <div class="drum-pad" data-key="65">
+                <div class="key">A</div>
+                <div class="label">Clap</div>
+            </div>
+            <div class="drum-pad" data-key="83">
+                <div class="key">S</div>
+                <div class="label">Hi-Hat</div>
+            </div>
+            <div class="drum-pad" data-key="68">
+                <div class="key">D</div>
+                <div class="label">Kick</div>
+            </div>
+            <div class="drum-pad" data-key="70">
+                <div class="key">F</div>
+                <div class="label">Open Hat</div>
+            </div>
+            <div class="drum-pad" data-key="71">
+                <div class="key">G</div>
+                <div class="label">Boom</div>
+            </div>
+            <div class="drum-pad" data-key="72">
+                <div class="key">H</div>
+                <div class="label">Ride</div>
+            </div>
+            <div class="drum-pad" data-key="74">
+                <div class="key">J</div>
+                <div class="label">Snare</div>
+            </div>
+            <div class="drum-pad" data-key="75">
+                <div class="key">K</div>
+                <div class="label">Tom</div>
+            </div>
+            <div class="drum-pad" data-key="76">
+                <div class="key">L</div>
+                <div class="label">Tink</div>
+            </div>
+        </div>
+
+    
+    </div>
+
+    <audio data-key="65" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/clap.wav"></audio>
+    <audio data-key="83" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/hihat.wav"></audio>
+    <audio data-key="68" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/kick.wav"></audio>
+    <audio data-key="70" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/openhat.wav"></audio>
+    <audio data-key="71" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/boom.wav"></audio>
+    <audio data-key="72" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/ride.wav"></audio>
+    <audio data-key="74" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/snare.wav"></audio>
+    <audio data-key="75" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/tom.wav"></audio>
+    <audio data-key="76" src="https://raw.githubusercontent.com/wesbos/JavaScript30/master/01%20-%20JavaScript%20Drum%20Kit/sounds/tink.wav"></audio>
+
+    <script>
+        class DrumMachine {
+            constructor() {
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                // Écoute des événements clavier
+                window.addEventListener('keydown', this.handleKeyDown.bind(this));
+
+                // Écoute des événements sur les pads de batterie
+                const drumPads = document.querySelectorAll('.drum-pad');
+                drumPads.forEach(pad => {
+                    pad.addEventListener('click', this.handlePadClick.bind(this));
+                });
+
+                // Écoute des événements sur les boutons de playlist
+                const playlistButtons = document.querySelectorAll('.play-btn');
+                playlistButtons.forEach(btn => {
+                    btn.addEventListener('click', this.handlePlaylistPlay.bind(this));
+                });
+
+                // Écoute des événements sur les playlists
+                const playlists = document.querySelectorAll('.playlist');
+                playlists.forEach(playlist => {
+                    playlist.addEventListener('click', this.handlePlaylistClick.bind(this));
+                });
+            }
+
+            handleKeyDown(event) {
+                const drumPad = document.querySelector(`.drum-pad[data-key="${event.keyCode}"]`);
+                if (drumPad) {
+                    this.playSound(event.keyCode);
+                }
+            }
+
+            handlePadClick(event) {
+                const drumPad = event.currentTarget;
+                const keyCode = drumPad.getAttribute('data-key');
+                this.playSound(keyCode);
+            }
+
+            playSound(keyCode) {
+                const audio = document.querySelector(`audio[data-key="${keyCode}"]`);
+                const drumPad = document.querySelector(`.drum-pad[data-key="${keyCode}"]`);
+
+                if (audio && drumPad) {
+                    audio.currentTime = 0;
+                    audio.play();
+                    
+                    drumPad.classList.add('active');
+                    setTimeout(() => {
+                        drumPad.classList.remove('active');
+                    }, 100);
+                }
+            }
+
+            handlePlaylistClick(event) {
+                const playlist = event.currentTarget;
+                const sequence = playlist.getAttribute('data-sequence');
+                this.playSequence(sequence);
+            }
+
+            handlePlaylistPlay(event) {
+                event.stopPropagation();
+                const playlist = event.target.closest('.playlist');
+                const sequence = playlist.getAttribute('data-sequence');
+                this.playSequence(sequence);
+            }
+
+            playSequence(sequence) {
+                if (this.sequenceInterval) {
+                    clearInterval(this.sequenceInterval);
+                }
+
+                const keys = sequence.split(',').map(Number);
+                let index = 0;
+
+                this.sequenceInterval = setInterval(() => {
+                    if (index >= keys.length) {
+                        clearInterval(this.sequenceInterval);
+                        return;
+                    }
+
+                    this.playSound(keys[index]);
+                    index++;
+                }, 300);
+            }
+        }
+
+        // Initialisation de la machine à batterie
+        document.addEventListener('DOMContentLoaded', () => {
+            new DrumMachine();
+        });
+    </script>
+</body>
+</html>
