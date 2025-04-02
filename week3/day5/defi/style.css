@@ -60,7 +60,17 @@ button:hover {
     display: flex;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #222222;
     position: relative;
 }
 
+.task label {
+    flex-grow: 1;
+    user-select: none;
+    color: #201e1e;
+}
+
+.task input[type="checkbox"]:checked + label {
+    text-decoration: line-through;
+    color: #f44336;
+}
