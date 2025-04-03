@@ -8,16 +8,10 @@ function sommeTableau(arr) {
 
 
 //Ex2:
-function supprimerDoublons(arr) {
-    return [...new Set(arr)];
+
+  function supprimerDoublons(arr) {
+    return arr.filter((item, index) => arr.indexOf(item) === index);
   }
-  
-  // Solution alternative :
-  // function supprimerDoublons(arr) {
-  //   return arr.filter((item, index) => arr.indexOf(item) === index);
-  // }
-  
-  // Exemple d'utilisation :
   console.log(supprimerDoublons([1, 2, 2, 3, 4, 4, 5])); // Résultat: [1, 2, 3, 4, 5]
 
 //Ex3:
