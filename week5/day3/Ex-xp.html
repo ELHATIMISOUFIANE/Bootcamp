@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars Character Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffd700;
+            --background-color: #000;
+            --text-color: #fff;
+            --card-background: #222;
+            --button-hover: #e6c200;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: url('https://api.placeholder.com/800/600');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            color: var(--primary-color);
+            font-size: 3rem;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .description {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .character-card {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .character-name {
+            color: var(--primary-color);
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .character-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin: 40px 0;
+            animation: pulse 1s infinite;
+        }
+
+        .error {
+            display: none;
+            background-color: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            color: #ff6b6b;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .error-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="title">Star Wars Character Explorer</h1>
+        <p class="description">Discover random characters from the Star Wars universe with the click of a button!</p>
+    </header>
+
+    <div class="container">
+        <div class="btn-container">
+            <button id="getCharacter" class="btn">
+                <i class="fas fa-random"></i> Get Random Character
+            </button>
+        </div>
+
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+
+        <div id="error" class="error">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="error-message">Oh no! That person isn't available.</div>
+        </div>
+
+        <div id="characterCard" class="character-card">
+            <h2 id="characterName" class="character-name">Character Name</h2>
+            <div class="character-info">
+                <div class="info-item">
+                    <div class="info-label">Height</div>
+                    <div id="characterHeight" class="info-value">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Gender</div>
+                    <div id="characterGender" class="info-value">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Birth Year</div>
+                    <div id="characterBirth" class="info-value">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Homeworld</div>
+                    <div id="characterHomeworld" class="info-value">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Data powered by SWAPI - The Star Wars API</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const getCharacterBtn = document.getElementById('getCharacter');
+        const characterCard = document.getElementById('characterCard');
+        const characterName = document.getElementById('characterName');
+        const characterHeight = document.getElementById('characterHeight');
+        const characterGender = document.getElementById('characterGender');
+        const characterBirth = document.getElementById('characterBirth');
+        const characterHomeworld = document.getElementById('characterHomeworld');
+        const loadingIndicator = document.getElementById('loading');
+        const errorMessage = document.getElementById('error');
+
+        // Event Listeners
+        getCharacterBtn.addEventListener('click', getRandomCharacter);
+
+        // Functions
+        function getRandomCharacter() {
+            // Hide previous results and error
+            characterCard.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Show loading
+            loadingIndicator.style.display = 'block';
+            
+            // Generate random character ID (SWAPI has 83 characters)
+            const randomId = Math.floor(Math.random() * 83) + 1;
+            
+            // Fetch character data
+            fetch(`https://www.swapi.tech/api/people/${randomId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Character not found');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const character = data.result.properties;
+                    
+                    // Update character info
+                    characterName.textContent = character.name;
+                    characterHeight.textContent = character.height === 'unknown' ? 'Unknown' : `${character.height} cm`;
+                    characterGender.textContent = character.gender === 'n/a' ? 'Not Applicable' : 
+                                                 character.gender === 'none' ? 'None' : 
+                                                 character.gender.charAt(0).toUpperCase() + character.gender.slice(1);
+                    characterBirth.textContent = character.birth_year === 'unknown' ? 'Unknown' : character.birth_year;
+                    
+                    // Fetch homeworld data
+                    return fetch(character.homeworld);
+                })
+                .then(response => response.json())
+                .then(data => {
+                    characterHomeworld.textContent = data.result.properties.name;
+                    
+                    // Hide loading and show character card
+                    loadingIndicator.style.display = 'none';
+                    characterCard.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Hide loading and show error
+                    loadingIndicator.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>

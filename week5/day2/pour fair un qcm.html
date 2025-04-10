@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Interactif</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        
+        .question h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        
+        .options {
+            margin-top: 10px;
+        }
+        
+        .option {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background-color: #d6eaf8;
+        }
+        
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e8f4fd;
+            display: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QCM Interactif</h1>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        
+        <div id="quiz">
+            <!-- Les questions seront injectées ici par JavaScript -->
+        </div>
+        
+        <button id="submit">Soumettre</button>
+        
+        <div id="result">
+            <h2>Résultats</h2>
+            <p id="score"></p>
+            <div id="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration du questionnaire
+        const quizData = [
+            {
+                question: "Quelle est la méthode JavaScript pour récupérer des données d'une API?",
+                options: [
+                    "getData()",
+                    "fetch()",
+                    "pullData()",
+                    "request()"
+                ],
+                correct: 1,
+                explanation: "La méthode fetch() est utilisée pour effectuer des requêtes HTTP et récupérer des ressources."
+            },
+            {
+                question: "Que signifie API?",
+                options: [
+                    "Application Programming Interface",
+                    "Automated Programming Interface",
+                    "Application Process Integration",
+                    "Advanced Programming Integration"
+                ],
+                correct: 0,
+                explanation: "API signifie Application Programming Interface, qui est un ensemble de règles permettant à différentes applications de communiquer entre elles."
+            },
+            {
+                question: "Comment déclare-t-on une fonction asynchrone en JavaScript?",
+                options: [
+                    "function async() {}",
+                    "async = function() {}",
+                    "async function() {}",
+                    "function() async {}"
+                ],
+                correct: 2,
+                explanation: "La syntaxe correcte est 'async function() {}' qui permet d'utiliser await à l'intérieur de la fonction."
+            },
+            {
+                question: "Que fait l'opérateur 'await' en JavaScript?",
+                options: [
+                    "Il termine immédiatement la fonction",
+                    "Il attend qu'une promesse soit résolue avant de continuer",
+                    "Il attend un délai spécifié en millisecondes",
+                    "Il attend l'entrée de l'utilisateur"
+                ],
+                correct: 1,
+                explanation: "L'opérateur 'await' suspend l'exécution de la fonction asynchrone jusqu'à ce que la promesse soit résolue."
+            },
+            {
+                question: "Quelle méthode convertit une réponse d'API en objet JavaScript?",
+                options: [
+                    "response.parse()",
+                    "response.convert()",
+                    "response.json()",
+                    "response.object()"
+                ],
+                correct: 2,
+                explanation: "La méthode response.json() est utilisée pour extraire le corps JSON d'une réponse d'API."
+            }
+        ];
+
+        // Variables globales
+        const quizContainer = document.getElementById('quiz');
+        const resultContainer = document.getElementById('result');
+        const submitButton = document.getElementById('submit');
+        const scoreElement = document.getElementById('score');
+        const feedbackElement = document.getElementById('feedback');
+        const progressBar = document.getElementById('progress');
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        // Fonction pour afficher une question
+        function showQuestion(questionIndex) {
+            const questionData = quizData[questionIndex];
+            
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question');
+            questionElement.id = `question-${questionIndex}`;
+            
+            // Titre de la question
+            const questionTitle = document.createElement('h3');
+            questionTitle.textContent = `Question ${questionIndex + 1}: ${questionData.question}`;
+            questionElement.appendChild(questionTitle);
+            
+            // Options de réponse
+            const optionsContainer = document.createElement('div');
+            optionsContainer.classList.add('options');
+            
+            questionData.options.forEach((option, index) => {
+                const optionContainer = document.createElement('label');
+                optionContainer.classList.add('option');
+                
+                const radioInput = document.createElement('input');
+                radioInput.type = 'radio';
+                radioInput.name = `question-${questionIndex}`;
+                radioInput.value = index;
+                radioInput.id = `q${questionIndex}-option${index}`;
+                radioInput.addEventListener('change', () => {
+                    userAnswers[questionIndex] = index;
+                    updateProgressBar();
+                });
+                
+                const optionText = document.createTextNode(option);
+                
+                optionContainer.appendChild(radioInput);
+                optionContainer.appendChild(optionText);
+                optionsContainer.appendChild(optionContainer);
+            });
+            
+            questionElement.appendChild(optionsContainer);
+            quizContainer.appendChild(questionElement);
+        }
+
+        // Initialiser le quiz
+        function initQuiz() {
+            quizContainer.innerHTML = '';
+            userAnswers = Array(quizData.length).fill(undefined);
+            
+            // Afficher toutes les questions
+            quizData.forEach((_, index) => {
+                showQuestion(index);
+            });
+            
+            updateProgressBar();
+        }
+
+        // Mettre à jour la barre de progression
+        function updateProgressBar() {
+            const answeredCount = userAnswers.filter(answer => answer !== undefined).length;
+            const progressPercentage = (answeredCount / quizData.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        // Calculer les résultats
+        function calculateResults() {
+            score = 0;
+            feedbackElement.innerHTML = '';
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === quizData[index].correct) {
+                    score++;
+                }
+                
+                // Créer un élément de feedback pour chaque question
+                const feedbackItem = document.createElement('div');
+                feedbackItem.classList.add('question');
+                feedbackItem.classList.add(answer === quizData[index].correct ? 'correct' : 'incorrect');
+                
+                feedbackItem.innerHTML = `
+                    <h4>Question ${index + 1}: ${quizData[index].question}</h4>
+                    <p>Votre réponse: ${quizData[index].options[answer]}</p>
+                    <p>Réponse correcte: ${quizData[index].options[quizData[index].correct]}</p>
+                    <p><strong>Explication:</strong> ${quizData[index].explanation}</p>
+                `;
+                
+                feedbackElement.appendChild(feedbackItem);
+            });
+            
+            const percentage = (score / quizData.length) * 100;
+            scoreElement.textContent = `Vous avez obtenu ${score} sur ${quizData.length} (${percentage.toFixed(1)}%)`;
+            
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Gérer la soumission du quiz
+        submitButton.addEventListener('click', () => {
+            // Vérifier si toutes les questions ont été répondues
+            const unansweredCount = userAnswers.filter(answer => answer === undefined).length;
+            
+            if (unansweredCount > 0) {
+                if (!confirm(`Vous n'avez pas répondu à ${unansweredCount} question(s). Voulez-vous soumettre quand même?`)) {
+                    return;
+                }
+            }
+            
+            calculateResults();
+        });
+
+        // Démarrer le quiz
+        initQuiz();
+    </script>
+</body>
+</html>
